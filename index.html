@@ -107,13 +107,17 @@ document.getElementById('smsForm').addEventListener('submit', function(e) {
     const statusBox = document.getElementById('statusBox');
     const submitBtn = document.getElementById('submitBtn');
     
+    // UI Updates
+    statusBox.style.display = "none";
     submitBtn.innerText = "Sending...";
     submitBtn.disabled = true;
 
     const token = "apit-tx2F7sJI6taeb3ZSOvHmmoabVGNaUR6c-cXH9f";
-    const url = "https://rest.moceanapi.com/rest/2/sms";
+    
+    // CORS bypass karne ke liye corsproxy.io ka istemal kiya hai
+    const url = "https://corsproxy.io/?https://rest.moceanapi.com/rest/2/sms";
 
-    // URLSearchParams FormData ki tarah kaam karta hai jo curl -d me chahiye
+    // Data setting
     const details = new URLSearchParams();
     details.append('mocean-from', 'MOCEAN');
     details.append('mocean-to', to);
@@ -127,18 +131,32 @@ document.getElementById('smsForm').addEventListener('submit', function(e) {
         },
         body: details
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        return response.json();
+    })
     .then(data => {
         statusBox.style.display = "block";
-        statusBox.className = "alert success";
-        statusBox.innerText = "SMS Sent Successfully! Response: " + JSON.stringify(data);
+        
+        // MoceanAPI status check (0 matlab success hota hai)
+        if(data.messages && data.messages[0] && data.messages[0].status == 0) {
+            statusBox.className = "alert success";
+            statusBox.innerText = "SMS Sent Successfully!";
+        } else {
+            statusBox.className = "alert error";
+            statusBox.innerText = "API Error: " + JSON.stringify(data);
+        }
+        
         submitBtn.innerText = "Send SMS";
         submitBtn.disabled = false;
     })
     .catch(error => {
         statusBox.style.display = "block";
         statusBox.className = "alert error";
-        statusBox.innerText = "Error: " + error;
+        statusBox.innerText = "Failed to Send: " + error.message;
+        
         submitBtn.innerText = "Send SMS";
         submitBtn.disabled = false;
     });

@@ -112,16 +112,15 @@ document.getElementById('smsForm').addEventListener('submit', function(e) {
     submitBtn.innerText = "Sending...";
     submitBtn.disabled = true;
 
-    // Token aur Proxy URL
-    const token = "apit-tx2F7sJI6taeb3ZSOvHmmoabVGNaUR6c-cXH9f";
+    // Aapka Naya API Token yahan daal diya hai
+    const token = "apit-KX6ODzAxVvKKz6HaXoIKzCB2uKNyLRWk-CTY4i";
     const url = "https://corsproxy.io/?https://rest.moceanapi.com/rest/2/sms";
 
-    // Data parameters setting
+    // Parameters build karna
     const details = new URLSearchParams();
     details.append('mocean-from', 'MOCEAN');
     details.append('mocean-to', to);
     details.append('mocean-text', text);
-    // Force JSON response directly inside body parameters
     details.append('mocean-resp-format', 'json');
 
     fetch(url, {
@@ -133,14 +132,12 @@ document.getElementById('smsForm').addEventListener('submit', function(e) {
         body: details
     })
     .then(response => {
-        // Direct text check karenge taake agar abhi bhi galti se XML aaye to catch ho jaye
         return response.text();
     })
     .then(textData => {
         statusBox.style.display = "block";
         
         try {
-            // Yahan hum manual check kar rahe hain ke response sahi json hai ya nahi
             const data = JSON.parse(textData);
             
             if(data.messages && data.messages[0] && data.messages[0].status == 0) {
@@ -151,7 +148,7 @@ document.getElementById('smsForm').addEventListener('submit', function(e) {
                 statusBox.innerText = "API Error: " + JSON.stringify(data);
             }
         } catch(jsonError) {
-            // Agar API ne phir bhi badmashi ki aur XML bheja, to error nahi aayega balki raw response show ho jayega
+            // XML response fallback check
             if (textData.includes('status="0"') || textData.includes('<status>0</status>')) {
                 statusBox.className = "alert success";
                 statusBox.innerText = "SMS Sent Successfully! (XML Format Status 0)";

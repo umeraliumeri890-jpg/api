@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoceanAPI SMS Sender</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: 600;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .alert {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            word-break: break-all;
+            display: none;
+        }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>MoceanAPI SMS Sender</h2>
+    
+    <div id="statusBox" class="alert"></div>
+
+    <form id="smsForm">
+        <div class="form-group">
+            <label for="to">Mobile Number (With Country Code):</label>
+            <input type="text" id="to" placeholder="Example: 263789789097" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="text">Message:</label>
+            <textarea id="text" placeholder="Type your message here..." required></textarea>
+        </div>
+        
+        <button type="submit" id="submitBtn">Send SMS</button>
+    </form>
+</div>
+
+<script>
+document.getElementById('smsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const to = document.getElementById('to').value;
+    const text = document.getElementById('text').value;
+    const statusBox = document.getElementById('statusBox');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    submitBtn.innerText = "Sending...";
+    submitBtn.disabled = true;
+
+    const token = "apit-tx2F7sJI6taeb3ZSOvHmmoabVGNaUR6c-cXH9f";
+    const url = "https://rest.moceanapi.com/rest/2/sms";
+
+    // URLSearchParams FormData ki tarah kaam karta hai jo curl -d me chahiye
+    const details = new URLSearchParams();
+    details.append('mocean-from', 'MOCEAN');
+    details.append('mocean-to', to);
+    details.append('mocean-text', text);
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: details
+    })
+    .then(response => response.json())
+    .then(data => {
+        statusBox.style.display = "block";
+        statusBox.className = "alert success";
+        statusBox.innerText = "SMS Sent Successfully! Response: " + JSON.stringify(data);
+        submitBtn.innerText = "Send SMS";
+        submitBtn.disabled = false;
+    })
+    .catch(error => {
+        statusBox.style.display = "block";
+        statusBox.className = "alert error";
+        statusBox.innerText = "Error: " + error;
+        submitBtn.innerText = "Send SMS";
+        submitBtn.disabled = false;
+    });
+});
+</script>
+
+</body>
+</html>

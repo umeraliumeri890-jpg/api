@@ -112,8 +112,8 @@ document.getElementById('smsForm').addEventListener('submit', function(e) {
     submitBtn.innerText = "Sending...";
     submitBtn.disabled = true;
 
-    // Aapka bilkul naya API Token yahan add kar diya hai
-    const token = "apit-t9vizq4xkBELHbDdAMkBk0iCQqFquMfL-MAUbP";
+    // Aapka bilkul naya token yahan add ho chuka hai
+    const token = "apit-qjSf3GGDgVKihKumJBdaDDT67uj9tiYH-rEMi8";
     const url = "https://corsproxy.io/?https://rest.moceanapi.com/rest/2/sms";
 
     // Parameters build karna
@@ -148,7 +148,7 @@ document.getElementById('smsForm').addEventListener('submit', function(e) {
                 statusBox.innerText = "API Error: " + JSON.stringify(data);
             }
         } catch(jsonError) {
-            // XML response fallback check
+            // XML fallback handle
             if (textData.includes('status="0"') || textData.includes('<status>0</status>')) {
                 statusBox.className = "alert success";
                 statusBox.innerText = "SMS Sent Successfully! (XML Format Status 0)";

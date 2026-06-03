@@ -107,22 +107,22 @@ document.getElementById('smsForm').addEventListener('submit', function(e) {
     const statusBox = document.getElementById('statusBox');
     const submitBtn = document.getElementById('submitBtn');
     
-    // Reset UI
+    // UI Reset
     statusBox.style.display = "none";
     submitBtn.innerText = "Sending...";
     submitBtn.disabled = true;
 
-    // Aapka API Token
+    // Token aur Proxy URL
     const token = "apit-tx2F7sJI6taeb3ZSOvHmmoabVGNaUR6c-cXH9f";
-    
-    // CORS Proxy + MoceanAPI URL (JSON Format Request)
-    const url = "https://corsproxy.io/?https://rest.moceanapi.com/rest/2/sms?mocean-resp-format=json";
+    const url = "https://corsproxy.io/?https://rest.moceanapi.com/rest/2/sms";
 
-    // Form Data prepare karna
+    // Data parameters setting
     const details = new URLSearchParams();
     details.append('mocean-from', 'MOCEAN');
     details.append('mocean-to', to);
     details.append('mocean-text', text);
+    // Force JSON response directly inside body parameters
+    details.append('mocean-resp-format', 'json');
 
     fetch(url, {
         method: 'POST',
@@ -133,21 +133,32 @@ document.getElementById('smsForm').addEventListener('submit', function(e) {
         body: details
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network error: ' + response.statusText);
-        }
-        return response.json();
+        // Direct text check karenge taake agar abhi bhi galti se XML aaye to catch ho jaye
+        return response.text();
     })
-    .then(data => {
+    .then(textData => {
         statusBox.style.display = "block";
         
-        // Response check karna (Mocean me status 0 ka matlab success hota hai)
-        if(data.messages && data.messages[0] && data.messages[0].status == 0) {
-            statusBox.className = "alert success";
-            statusBox.innerText = "SMS Sent Successfully!";
-        } else {
-            statusBox.className = "alert error";
-            statusBox.innerText = "API Error: " + JSON.stringify(data);
+        try {
+            // Yahan hum manual check kar rahe hain ke response sahi json hai ya nahi
+            const data = JSON.parse(textData);
+            
+            if(data.messages && data.messages[0] && data.messages[0].status == 0) {
+                statusBox.className = "alert success";
+                statusBox.innerText = "SMS Sent Successfully!";
+            } else {
+                statusBox.className = "alert error";
+                statusBox.innerText = "API Error: " + JSON.stringify(data);
+            }
+        } catch(jsonError) {
+            // Agar API ne phir bhi badmashi ki aur XML bheja, to error nahi aayega balki raw response show ho jayega
+            if (textData.includes('status="0"') || textData.includes('<status>0</status>')) {
+                statusBox.className = "alert success";
+                statusBox.innerText = "SMS Sent Successfully! (XML Format Status 0)";
+            } else {
+                statusBox.className = "alert error";
+                statusBox.innerText = "Raw Response: " + textData;
+            }
         }
         
         submitBtn.innerText = "Send SMS";

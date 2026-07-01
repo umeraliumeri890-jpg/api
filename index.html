@@ -5,137 +5,154 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoceanAPI SMS Sender</title>
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            padding: 20px;
+            background: #f4f6f9;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            padding: 20px;
         }
         .container {
-            background-color: #ffffff;
+            background: #fff;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 480px;
+            max-width: 460px;
         }
         h2 {
             text-align: center;
-            color: #333;
-            margin-bottom: 20px;
+            color: #2c3e50;
+            margin-bottom: 24px;
+            font-size: 22px;
         }
-        .form-group {
-            margin-bottom: 15px;
+
+        /* ===== TABS ===== */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 22px;
         }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6c757d;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            border-radius: 0;
+        }
+        .tab-btn.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+        }
+        .tab-btn:hover { color: #007bff; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ===== FORM ===== */
+        .form-group { margin-bottom: 16px; }
         label {
             display: block;
-            margin-bottom: 5px;
-            color: #666;
+            margin-bottom: 6px;
+            color: #555;
             font-weight: 600;
-        }
-        input[type="text"], input[type="password"], textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
             font-size: 14px;
         }
+        input[type="text"],
+        input[type="password"],
         textarea {
-            resize: vertical;
-            height: 100px;
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
         }
-        button {
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        textarea { resize: vertical; height: 100px; }
+
+        .btn {
             width: 100%;
             padding: 12px;
-            background-color: #007bff;
             border: none;
-            color: white;
-            font-size: 16px;
+            border-radius: 6px;
+            font-size: 15px;
             font-weight: bold;
-            border-radius: 5px;
             cursor: pointer;
             transition: background 0.3s;
         }
-        button:hover { background-color: #0056b3; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-primary:hover { background: #0056b3; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #1e7e34; }
 
+        /* ===== ALERTS ===== */
         .alert {
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 15px;
+            padding: 10px 14px;
+            border-radius: 6px;
             font-size: 13px;
-            word-break: break-all;
+            margin-bottom: 16px;
             display: none;
+            word-break: break-all;
         }
-        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .error   { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .info    { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error   { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .alert-info    { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
 
-        /* ---- Settings Panel ---- */
-        .settings-toggle {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .settings-toggle a {
-            font-size: 13px;
-            color: #007bff;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .settings-toggle a:hover { text-decoration: underline; }
-
-        .settings-panel {
+        /* ===== SETTINGS TAB ===== */
+        .settings-box {
             background: #f8f9fa;
             border: 1px solid #dee2e6;
             border-radius: 8px;
-            padding: 18px;
-            margin-bottom: 20px;
-            display: none;
+            padding: 16px;
+            margin-bottom: 16px;
         }
-        .settings-panel h4 {
-            margin: 0 0 12px 0;
-            color: #444;
-            font-size: 15px;
+        .settings-box p {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
         }
-        .token-row {
+        .token-input-group {
             display: flex;
             gap: 8px;
-            align-items: center;
+            margin-bottom: 8px;
         }
-        .token-row input {
-            flex: 1;
-        }
-        .btn-small {
+        .token-input-group input { flex: 1; }
+        .btn-eye {
             padding: 10px 14px;
-            font-size: 13px;
-            font-weight: bold;
+            background: #6c757d;
+            color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
-            white-space: nowrap;
+            font-size: 16px;
             width: auto;
         }
-        .btn-save  { background-color: #28a745; color: white; }
-        .btn-save:hover  { background-color: #1e7e34; }
-        .btn-show  { background-color: #6c757d; color: white; }
-        .btn-show:hover  { background-color: #545b62; }
+        .btn-eye:hover { background: #545b62; }
 
-        .token-status {
+        .current-token {
+            background: #e9ecef;
+            border-radius: 5px;
+            padding: 8px 12px;
             font-size: 12px;
-            margin-top: 8px;
             color: #555;
-        }
-        .token-status span {
-            font-weight: bold;
-            color: #007bff;
+            margin-top: 10px;
             word-break: break-all;
         }
-
-        hr { border: none; border-top: 1px solid #eee; margin: 20px 0; }
+        .current-token strong { color: #007bff; }
     </style>
 </head>
 <body>
@@ -143,158 +160,188 @@
 <div class="container">
     <h2>📱 MoceanAPI SMS Sender</h2>
 
-    <!-- Settings Toggle Link -->
-    <div class="settings-toggle">
-        <a onclick="toggleSettings()">⚙️ API Settings</a>
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('sms', this)">📨 Send SMS</button>
+        <button class="tab-btn" onclick="switchTab('settings', this)">⚙️ API Settings</button>
     </div>
 
-    <!-- Settings Panel -->
-    <div class="settings-panel" id="settingsPanel">
-        <h4>🔑 API Token Update Karein</h4>
-        <div class="token-row">
-            <input type="password" id="tokenInput" placeholder="Naya API Token yahan paste karein...">
-            <button class="btn-small btn-show" onclick="toggleTokenVisibility()">👁️</button>
-            <button class="btn-small btn-save" onclick="saveToken()">Save</button>
-        </div>
-        <div class="token-status" id="tokenStatus">
-            Current Token: <span id="currentTokenDisplay">Loading...</span>
-        </div>
+    <!-- ===== TAB 1: SMS ===== -->
+    <div class="tab-content active" id="tab-sms">
+        <div class="alert alert-success" id="smsSuccess"></div>
+        <div class="alert alert-error"   id="smsError"></div>
+
+        <form id="smsForm">
+            <div class="form-group">
+                <label>📞 Mobile Number (With Country Code):</label>
+                <input type="text" id="to" placeholder="Example: 923001234567" required>
+            </div>
+            <div class="form-group">
+                <label>💬 Message:</label>
+                <textarea id="text" placeholder="Type your message here..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" id="submitBtn">🚀 Send SMS</button>
+        </form>
     </div>
 
-    <div id="statusBox" class="alert"></div>
+    <!-- ===== TAB 2: SETTINGS ===== -->
+    <div class="tab-content" id="tab-settings">
+        <div class="settings-box">
+            <p>⚠️ Yahan se aap apna <strong>MoceanAPI Token</strong> update kar sakte hain. Token browser mein save rahega.</p>
 
-    <form id="smsForm">
-        <div class="form-group">
-            <label for="to">Mobile Number (With Country Code):</label>
-            <input type="text" id="to" placeholder="Example: 263789789097" required>
+            <div class="form-group">
+                <label>🔑 Naya API Token:</label>
+                <div class="token-input-group">
+                    <input type="password" id="tokenInput" placeholder="Naya token yahan paste karein...">
+                    <button class="btn-eye" onclick="toggleEye()" id="eyeBtn">👁️</button>
+                </div>
+                <button class="btn btn-success" onclick="saveToken()">💾 Token Save Karein</button>
+            </div>
+
+            <div class="current-token">
+                Active Token: <strong id="tokenPreview">Loading...</strong>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="text">Message:</label>
-            <textarea id="text" placeholder="Type your message here..." required></textarea>
-        </div>
-        <button type="submit" id="submitBtn">Send SMS</button>
-    </form>
+
+        <div class="alert alert-info"    id="settingInfo"></div>
+        <div class="alert alert-success" id="settingSuccess"></div>
+        <div class="alert alert-error"   id="settingError"></div>
+    </div>
 </div>
 
 <script>
-    // ===== DEFAULT TOKEN (Sirf pehli baar use hoga) =====
+    // =============================================
+    // CONFIG — Sirf yahan default token rakhein
+    // (Settings tab se update karne ke baad yeh
+    //  localStorage se aayega, yeh nahi)
+    // =============================================
     const DEFAULT_TOKEN = "apit-K8VF1J8FDU60hykWbWB8k1Y8ZSkBKhFj-fqO4Z";
-    const TOKEN_KEY = "mocean_api_token";
+    const STORAGE_KEY   = "mocean_api_token";
 
-    // ===== Token Load karna =====
+    // =============================================
+    // HELPERS
+    // =============================================
     function getToken() {
-        return localStorage.getItem(TOKEN_KEY) || DEFAULT_TOKEN;
+        return localStorage.getItem(STORAGE_KEY) || DEFAULT_TOKEN;
     }
 
-    function saveToken() {
-        const newToken = document.getElementById('tokenInput').value.trim();
-        if (!newToken) {
-            alert("Token khali nahi ho sakta!");
-            return;
-        }
-        localStorage.setItem(TOKEN_KEY, newToken);
-        document.getElementById('tokenInput').value = '';
-        updateTokenDisplay();
-
-        const statusBox = document.getElementById('statusBox');
-        statusBox.style.display = "block";
-        statusBox.className = "alert info";
-        statusBox.innerText = "✅ API Token successfully save ho gaya!";
-        setTimeout(() => { statusBox.style.display = "none"; }, 3000);
+    function maskToken(t) {
+        if (!t || t.length < 10) return t;
+        return t.substring(0, 6) + "••••••••••••" + t.slice(-4);
     }
 
-    function updateTokenDisplay() {
-        const token = getToken();
-        const masked = token.substring(0, 8) + "••••••••" + token.substring(token.length - 4);
-        document.getElementById('currentTokenDisplay').innerText = masked;
+    function showAlert(id, msg, duration) {
+        const el = document.getElementById(id);
+        el.innerText = msg;
+        el.style.display = "block";
+        if (duration) setTimeout(() => { el.style.display = "none"; }, duration);
     }
 
-    function toggleSettings() {
-        const panel = document.getElementById('settingsPanel');
-        panel.style.display = (panel.style.display === 'none' || panel.style.display === '') ? 'block' : 'none';
-        updateTokenDisplay();
+    function refreshTokenPreview() {
+        document.getElementById('tokenPreview').innerText = maskToken(getToken());
     }
 
-    function toggleTokenVisibility() {
-        const input = document.getElementById('tokenInput');
-        const btn = document.querySelector('.btn-show');
-        if (input.type === 'password') {
-            input.type = 'text';
+    // =============================================
+    // TABS
+    // =============================================
+    function switchTab(name, btn) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.add('active');
+        btn.classList.add('active');
+        refreshTokenPreview();
+    }
+
+    // =============================================
+    // SETTINGS
+    // =============================================
+    function toggleEye() {
+        const inp = document.getElementById('tokenInput');
+        const btn = document.getElementById('eyeBtn');
+        if (inp.type === 'password') {
+            inp.type = 'text';
             btn.innerText = '🙈';
         } else {
-            input.type = 'password';
+            inp.type = 'password';
             btn.innerText = '👁️';
         }
     }
 
-    // Page load par token display update karo
-    window.onload = function() {
-        updateTokenDisplay();
-    };
+    function saveToken() {
+        const val = document.getElementById('tokenInput').value.trim();
+        if (!val) {
+            showAlert('settingError', '⚠️ Token field khali hai! Pehle token enter karein.', 3000);
+            return;
+        }
+        localStorage.setItem(STORAGE_KEY, val);
+        document.getElementById('tokenInput').value = '';
+        document.getElementById('tokenInput').type = 'password';
+        document.getElementById('eyeBtn').innerText = '👁️';
+        refreshTokenPreview();
+        showAlert('settingSuccess', '✅ Token successfully save ho gaya! Ab naya token use hoga.', 4000);
+    }
 
-    // ===== SMS Send karna =====
+    // =============================================
+    // SMS SEND
+    // =============================================
     document.getElementById('smsForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
-        const to = document.getElementById('to').value;
-        const text = document.getElementById('text').value;
-        const statusBox = document.getElementById('statusBox');
+        const to        = document.getElementById('to').value.trim();
+        const text      = document.getElementById('text').value.trim();
         const submitBtn = document.getElementById('submitBtn');
 
-        statusBox.style.display = "none";
-        submitBtn.innerText = "Sending...";
-        submitBtn.disabled = true;
+        document.getElementById('smsSuccess').style.display = "none";
+        document.getElementById('smsError').style.display   = "none";
+
+        submitBtn.innerText  = "⏳ Sending...";
+        submitBtn.disabled   = true;
 
         const token = getToken();
-        const url = "https://corsproxy.io/?https://rest.moceanapi.com/rest/2/sms";
+        const url   = "https://corsproxy.io/?https://rest.moceanapi.com/rest/2/sms";
 
-        const details = new URLSearchParams();
-        details.append('mocean-from', 'MOCEAN');
-        details.append('mocean-to', to);
-        details.append('mocean-text', text);
-        details.append('mocean-resp-format', 'json');
+        const body = new URLSearchParams();
+        body.append('mocean-from',        'MOCEAN');
+        body.append('mocean-to',          to);
+        body.append('mocean-text',        text);
+        body.append('mocean-resp-format', 'json');
 
         fetch(url, {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Authorization':  'Bearer ' + token,
+                'Content-Type':   'application/x-www-form-urlencoded'
             },
-            body: details
+            body: body
         })
-        .then(response => response.text())
-        .then(textData => {
-            statusBox.style.display = "block";
+        .then(r => r.text())
+        .then(raw => {
             try {
-                const data = JSON.parse(textData);
+                const data = JSON.parse(raw);
                 if (data.messages && data.messages[0] && data.messages[0].status == 0) {
-                    statusBox.className = "alert success";
-                    statusBox.innerText = "✅ SMS Successfully Send Ho Gaya!";
+                    showAlert('smsSuccess', '✅ SMS Successfully Send Ho Gaya!', 5000);
                 } else {
-                    statusBox.className = "alert error";
-                    statusBox.innerText = "❌ API Error: " + JSON.stringify(data);
+                    showAlert('smsError', '❌ API Error: ' + JSON.stringify(data));
                 }
-            } catch(jsonError) {
-                if (textData.includes('status="0"') || textData.includes('<status>0</status>')) {
-                    statusBox.className = "alert success";
-                    statusBox.innerText = "✅ SMS Successfully Send Ho Gaya! (XML Status 0)";
+            } catch (_) {
+                if (raw.includes('status="0"') || raw.includes('<status>0</status>')) {
+                    showAlert('smsSuccess', '✅ SMS Successfully Send Ho Gaya!', 5000);
                 } else {
-                    statusBox.className = "alert error";
-                    statusBox.innerText = "Raw Response: " + textData;
+                    showAlert('smsError', 'Raw Response: ' + raw);
                 }
             }
-            submitBtn.innerText = "Send SMS";
-            submitBtn.disabled = false;
         })
-        .catch(error => {
-            statusBox.style.display = "block";
-            statusBox.className = "alert error";
-            statusBox.innerText = "❌ Failed to Send: " + error.message;
-            submitBtn.innerText = "Send SMS";
-            submitBtn.disabled = false;
+        .catch(err => {
+            showAlert('smsError', '❌ Network Error: ' + err.message);
+        })
+        .finally(() => {
+            submitBtn.innerText = "🚀 Send SMS";
+            submitBtn.disabled  = false;
         });
     });
-</script>
 
+    // Init
+    refreshTokenPreview();
+</script>
 </body>
 </html>
